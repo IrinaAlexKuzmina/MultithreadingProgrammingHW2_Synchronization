@@ -8,9 +8,9 @@ public class Main {
         final Manufacture manufacture = new Manufacture(manufacturer, "Производитель");
 
         final ExecutorService customerPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        customerPool.submit(new Thread(null, manufacturer::sellCar, "Покупатель 1"));
-        customerPool.submit(new Thread(null, manufacturer::sellCar, "Покупатель 2"));
-        customerPool.submit(new Thread(null, manufacturer::sellCar, "Покупатель 3"));
+        customerPool.submit(manufacturer::sellCar);
+        customerPool.submit(manufacturer::sellCar);
+        customerPool.submit(manufacturer::sellCar);
 
         manufacture.start();
         customerPool.shutdown();
