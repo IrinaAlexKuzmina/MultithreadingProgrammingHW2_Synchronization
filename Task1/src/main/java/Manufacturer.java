@@ -12,27 +12,39 @@ class Manufacturer {
         return car;
     }
 
-    public synchronized void makeCar() throws InterruptedException {
-        log("Создаю машину");
-        Thread.sleep(CAR_MAKING_TIME);
+    public synchronized void makingCar() throws InterruptedException {
         this.getCars().add(new Car());
         log("Создание машины завершено. Свободных машин: " + getCars().size());
         notify();
         wait();
     }
 
-    public synchronized void sellCar() {
-        for (int i = 0; i <= PURCHASING_POWER; i++) {
+    public void makeCar() throws InterruptedException {
+        log("Создаю машину");
+        Thread.sleep(CAR_MAKING_TIME);
+        makingCar();
+    }
+
+    public synchronized void checkCar() throws InterruptedException {
+        while (getCars().size() == 0) {
+            log("Машин  нет!");
+            wait();
+        }
+    }
+
+    public synchronized void buyCar() throws InterruptedException {
+        log("Покупатель уехал на новеньком авто");
+        getCars().remove(0);
+        notifyAll();
+    }
+
+    public void sellCar() {
+        for (int i = 0; i < PURCHASING_POWER; i++) {
             try {
                 log("Дзынь-дзынь!!! Пришел покупатель!");
-                while (getCars().size() == 0) {
-                    log("Машин  нет!");
-                    wait();
-                }
+                checkCar();
                 Thread.sleep(CAR_SALE_TIME);
-                log("Покупатель уехал на новеньком авто");
-                getCars().remove(0);
-                notifyAll();
+                buyCar();
             } catch (InterruptedException e) {
                 log("я спал");
             }
